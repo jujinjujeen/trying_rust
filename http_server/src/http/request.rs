@@ -16,7 +16,7 @@ pub struct Request<'buf> {
 
 impl<'buf> Request<'buf> {
     pub fn path(&self) -> &str {
-        &self.path
+        self.path
     }
     pub fn method(&self) -> &Method {
         &self.method
@@ -41,16 +41,16 @@ impl<'buf> TryFrom<&'buf [u8]> for Request<'buf> {
         }
         let method: Method = method.parse()?;
         dbg!(path);
-        let mut query_str = None;
+        let mut query = None;
         if let Some(i) = path.find('?') {
-            query_str = Some(QueryString::from(&path[i + 1..]));
+            query = Some(QueryString::from(&path[i + 1..]));
             path = &path[..i];
         }
 
         Ok(Self {
-            path: path,
-            query: query_str,
-            method: method,
+            path,
+            query,
+            method,
         })
     }
 }
